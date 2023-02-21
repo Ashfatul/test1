@@ -1,10 +1,10 @@
 // select dom elements
 const matchContainerEl = document.getElementById("score-container");
-const addmatchEl = document.getElementById("add-match");
+const addMatchEl = document.getElementById("add-match");
 const resetBtnEl = document.getElementById("reset");
 
 //match template with id
-const getmatchHTMLStringWithId = (id) =>
+const getMatchHTMLStringWithId = (id) =>
   `<div class="match" id="match-${id}">
   <div class="wrapper">
     <button class="lws-delete"">
@@ -36,7 +36,6 @@ const increment = (match, incrementBy) => {
   };
 };
 const decrement = (match, decrementBy) => {
-  // console.log(decrementBy);
   return {
     type: "decrement",
     payload: match,
@@ -45,17 +44,17 @@ const decrement = (match, decrementBy) => {
 };
 
 //Add match
-const addmatch = (match) => {
+const addMatch = (match) => {
   return {
-    type: "addmatch",
+    type: "addMatch",
     payload: match,
   };
 };
 
 //Reset all matches
-const resetmatches = () => {
+const resetMatches = () => {
   return {
-    type: "resetmatch",
+    type: "resetMatch",
   };
 };
 
@@ -95,11 +94,17 @@ function matchReducer(state = initialState, action) {
       ...state,
       matches: state.matches.map((match) =>
         match.id === action.payload.id
-          ? { ...match, value: match.value - action.decrementBy }
+          ? {
+              ...match,
+              value:
+                match.value - action.decrementBy < 0
+                  ? 0
+                  : match.value - action.decrementBy,
+            }
           : { ...match }
       ),
     };
-  } else if (action.type === "addmatch") {
+  } else if (action.type === "addMatch") {
     return {
       ...state,
       matches: [
@@ -111,22 +116,13 @@ function matchReducer(state = initialState, action) {
         },
       ],
     };
-  } else if (action.type === "resetmatch") {
+  } else if (action.type === "resetMatch") {
     return {
       ...state,
       matches: state.matches.map((match) => ({
         ...match,
         value: match.defaultValue,
       })),
-    };
-  } else if (action.type === "setStateZero") {
-    return {
-      ...state,
-      matches: state.matches.map((match) =>
-        match.id === action.payload.id
-          ? { ...match, value: (match.value = 0) }
-          : { ...match }
-      ),
     };
   } else {
     return state;
@@ -142,7 +138,7 @@ const render = () => {
     if (!document.getElementById(`${match}-div-${match.id}-{i}`)) {
       const element = document.createElement("div");
       element.setAttribute("id", `${match}-div-${match.id}-{i}`);
-      element.innerHTML = getmatchHTMLStringWithId(`${i}-${match.id}`);
+      element.innerHTML = getMatchHTMLStringWithId(`${i}-${match.id}`);
       matchContainerEl.insertAdjacentElement("beforeend", element);
       const incrementEl = document.getElementById(`increment-${i}-${match.id}`);
       const decrementEl = document.getElementById(`decrement-${i}-${match.id}`);
@@ -180,24 +176,6 @@ const render = () => {
     matchValueEl.innerHTML = match.value;
   });
 
-  //   making sure that state is not less than zero
-
-  //   let validator = document.querySelectorAll(".lws-singleResult");
-  //   validator.forEach((singleItem) => {
-  //     if (parseInt(singleItem.innerHTML) < 0) {
-  //       store.dispatch(stateToZero());
-  //     }
-  //   });
-
-  // display total score at the top of the list
-
-  let total = document.querySelectorAll(".lws-singleResult");
-  let currentTotal = 0;
-  total.forEach((singleScore) => {
-    currentTotal += parseInt(singleScore.innerHTML);
-  });
-  document.getElementById("currentTotal").innerText = "Total: " + currentTotal;
-
   // delete button placeholder
 
   const deleteElement = document.querySelectorAll(".lws-delete");
@@ -211,16 +189,16 @@ const render = () => {
 // update UI on load
 render();
 
-addmatchEl.addEventListener("click", () => {
+addMatchEl.addEventListener("click", () => {
   store.dispatch(
-    addmatch({
+    addMatch({
       defaultValue: 0,
       increaseBy: 0,
     })
   );
 });
 resetBtnEl.addEventListener("click", () => {
-  store.dispatch(resetmatches());
+  store.dispatch(resetMatches());
 });
 
 store.subscribe(render);
