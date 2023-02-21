@@ -149,15 +149,27 @@ const render = () => {
       incrementEl.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
-          store.dispatch(increment(match, parseInt(e.target.value)));
-          e.target.value = "";
+          if (e.target.value > 0) {
+            store.dispatch(increment(match, parseInt(e.target.value)));
+            e.target.value = "";
+          } else {
+            alert(
+              "Invalid value received, make sure to enter only positive numbers"
+            );
+          }
         }
       });
       decrementEl.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
-          store.dispatch(decrement(match, parseInt(e.target.value)));
-          e.target.value = "";
+          if (e.target.value > 0) {
+            store.dispatch(decrement(match, parseInt(e.target.value)));
+            e.target.value = "";
+          } else {
+            alert(
+              "Invalid value received, make sure to enter only positive numbers"
+            );
+          }
         }
       });
     }
@@ -177,23 +189,23 @@ const render = () => {
   //     }
   //   });
 
-  // display total score
+  // display total score at the top of the list
 
-  //   let total = document.querySelectorAll(".lws-singleResult");
-  //   let currentTotal = 0;
-  //   total.forEach((singleScore) => {
-  //     currentTotal += parseInt(singleScore.innerHTML);
-  //   });
-  //   document.getElementById("currentTotal").innerText = "Total: " + currentTotal;
+  let total = document.querySelectorAll(".lws-singleResult");
+  let currentTotal = 0;
+  total.forEach((singleScore) => {
+    currentTotal += parseInt(singleScore.innerHTML);
+  });
+  document.getElementById("currentTotal").innerText = "Total: " + currentTotal;
 
   // delete button placeholder
 
-  //   const deleteElement = document.querySelectorAll(".lws-delete");
-  //   for (element of deleteElement) {
-  //     element.addEventListener("click", () => {
-  //       alert("This button is not functional !!!");
-  //     });
-  //   }
+  const deleteElement = document.querySelectorAll(".lws-delete");
+  for (element of deleteElement) {
+    element.addEventListener("click", () => {
+      alert("This button is not functional !!!");
+    });
+  }
 };
 
 // update UI on load
