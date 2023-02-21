@@ -12,14 +12,14 @@ const initialState = {
       id: 1,
       value: 0,
       increaseBy: 0,
-      defaultValue: 0,
+      default: 0,
     },
   ],
 };
 
-//match template with id
+// match template with id
 
-const getMatchHTMLStringWithId = (id) =>
+const createMatchElementWithID = (id) =>
   `<div class="match" id="match-${id}">
   <div class="wrapper">
     <button class="lws-delete"">
@@ -112,7 +112,7 @@ function matchReducer(state = initialState, action) {
         ...state.matches,
         {
           id: state.matches.length + 1,
-          value: action.payload.defaultValue,
+          value: action.payload.default,
           ...action.payload,
         },
       ],
@@ -122,7 +122,7 @@ function matchReducer(state = initialState, action) {
       ...state,
       matches: state.matches.map((match) => ({
         ...match,
-        value: match.defaultValue,
+        value: match.default,
       })),
     };
   } else {
@@ -142,7 +142,7 @@ const render = () => {
     if (!document.getElementById(`${match}-div-${match.id}-{i}`)) {
       const element = document.createElement("div");
       element.setAttribute("id", `${match}-div-${match.id}-{i}`);
-      element.innerHTML = getMatchHTMLStringWithId(`${i}-${match.id}`);
+      element.innerHTML = createMatchElementWithID(`${i}-${match.id}`);
       matchContainerElement.insertAdjacentElement("beforeend", element);
       const incrementElement = document.getElementById(
         `increment-${i}-${match.id}`
@@ -192,7 +192,7 @@ render();
 addMatchElement.addEventListener("click", () => {
   store.dispatch(
     addMatch({
-      defaultValue: 0,
+      default: 0,
       increaseBy: 0,
     })
   );
