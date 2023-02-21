@@ -1,9 +1,24 @@
 // select dom elements
-const matchContainerEl = document.getElementById("score-container");
-const addMatchEl = document.getElementById("add-match");
-const resetBtnEl = document.getElementById("reset");
+
+const matchContainerElement = document.getElementById("score-container");
+const addMatchElement = document.getElementById("add-match");
+const resetBtnElement = document.getElementById("reset");
+
+// initial state
+
+const initialState = {
+  matches: [
+    {
+      id: 1,
+      value: 0,
+      increaseBy: 0,
+      defaultValue: 0,
+    },
+  ],
+};
 
 //match template with id
+
 const getMatchHTMLStringWithId = (id) =>
   `<div class="match" id="match-${id}">
   <div class="wrapper">
@@ -27,7 +42,8 @@ const getMatchHTMLStringWithId = (id) =>
   </div>
 </div>`;
 
-// action creators
+// action creators increment
+
 const increment = (match, incrementBy) => {
   return {
     type: "increment",
@@ -35,6 +51,9 @@ const increment = (match, incrementBy) => {
     incrementBy,
   };
 };
+
+// action creators decrement
+
 const decrement = (match, decrementBy) => {
   return {
     type: "decrement",
@@ -43,7 +62,8 @@ const decrement = (match, decrementBy) => {
   };
 };
 
-//Add match
+// Add new match
+
 const addMatch = (match) => {
   return {
     type: "addMatch",
@@ -51,34 +71,15 @@ const addMatch = (match) => {
   };
 };
 
-//Reset all matches
+// Reset all matches
 const resetMatches = () => {
   return {
     type: "resetMatch",
   };
 };
 
-// set minimum state value to zero
-
-const stateToZero = () => {
-  return {
-    type: "setStateZero",
-  };
-};
-
-// initial state
-const initialState = {
-  matches: [
-    {
-      id: 1,
-      value: 0,
-      increaseBy: 0,
-      defaultValue: 0,
-    },
-  ],
-};
-
 // create reducer function
+
 function matchReducer(state = initialState, action) {
   if (action.type === "increment") {
     return {
@@ -130,7 +131,10 @@ function matchReducer(state = initialState, action) {
 }
 
 // create store
+
 const store = Redux.createStore(matchReducer);
+
+// render ui
 
 const render = () => {
   const state = store.getState();
@@ -139,10 +143,14 @@ const render = () => {
       const element = document.createElement("div");
       element.setAttribute("id", `${match}-div-${match.id}-{i}`);
       element.innerHTML = getMatchHTMLStringWithId(`${i}-${match.id}`);
-      matchContainerEl.insertAdjacentElement("beforeend", element);
-      const incrementEl = document.getElementById(`increment-${i}-${match.id}`);
-      const decrementEl = document.getElementById(`decrement-${i}-${match.id}`);
-      incrementEl.addEventListener("keypress", (e) => {
+      matchContainerElement.insertAdjacentElement("beforeend", element);
+      const incrementElement = document.getElementById(
+        `increment-${i}-${match.id}`
+      );
+      const decrementElement = document.getElementById(
+        `decrement-${i}-${match.id}`
+      );
+      incrementElement.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           if (e.target.value > 0) {
@@ -155,7 +163,7 @@ const render = () => {
           }
         }
       });
-      decrementEl.addEventListener("keypress", (e) => {
+      decrementElement.addEventListener("keypress", (e) => {
         if (e.key === "Enter") {
           e.preventDefault();
           if (e.target.value > 0) {
@@ -170,26 +178,18 @@ const render = () => {
       });
     }
 
-    const matchValueEl = document.getElementById(
+    const matchValueElement = document.getElementById(
       `match-value-${i}-${match.id}`
     );
-    matchValueEl.innerHTML = match.value;
+    matchValueElement.innerHTML = match.value;
   });
-
-  // delete button placeholder
-
-  const deleteElement = document.querySelectorAll(".lws-delete");
-  for (element of deleteElement) {
-    element.addEventListener("click", () => {
-      alert("This button is not functional !!!");
-    });
-  }
 };
 
-// update UI on load
+// render UI on load
+
 render();
 
-addMatchEl.addEventListener("click", () => {
+addMatchElement.addEventListener("click", () => {
   store.dispatch(
     addMatch({
       defaultValue: 0,
@@ -197,8 +197,10 @@ addMatchEl.addEventListener("click", () => {
     })
   );
 });
-resetBtnEl.addEventListener("click", () => {
+resetBtnElement.addEventListener("click", () => {
   store.dispatch(resetMatches());
 });
+
+// subscribe to store
 
 store.subscribe(render);
